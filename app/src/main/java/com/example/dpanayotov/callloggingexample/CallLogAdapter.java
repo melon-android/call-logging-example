@@ -37,17 +37,22 @@ public class CallLogAdapter extends ArrayAdapter<CallLog> {
         ((TextView) convertView.findViewById(R.id.call_number)).setText(callLog.getPhoneNumber());
         ((TextView) convertView.findViewById(R.id.call_date)).setText(callLog.getCallDate()
                 .toString());
-        switch (callLog.getCallDirection()) {
-            case INCOMING_TYPE:
-            case OUTGOING_TYPE:
-            case VOICEMAIL_TYPE: {
-                ((TextView) convertView.findViewById(R.id.call_duration)).setText(callLog
-                        .getCallDuration() + " seconds,");
-                break;
+        if(callLog.getCallDirection() != null) {
+            switch (callLog.getCallDirection()) {
+                case INCOMING_TYPE:
+                case OUTGOING_TYPE:
+                case VOICEMAIL_TYPE: {
+                    ((TextView) convertView.findViewById(R.id.call_duration)).setText(callLog
+                            .getCallDuration() + " seconds,");
+                    break;
+                }
             }
+
+            ((TextView) convertView.findViewById(R.id.call_direction)).setText(callLog
+                    .getCallDirection().toString());
         }
-        ((TextView) convertView.findViewById(R.id.call_direction)).setText(callLog
-                .getCallDirection().toString());
+
+
 
         return convertView;
     }

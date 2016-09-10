@@ -1,6 +1,7 @@
 package com.example.dpanayotov.callloggingexample;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -12,11 +13,13 @@ import android.widget.TextView;
 
 import com.example.dpanayotov.callloggingexample.model.CallLog;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnItemClick;
 
 public class CallLogActivity extends AppCompatActivity {
 
@@ -61,5 +64,12 @@ public class CallLogActivity extends AppCompatActivity {
             callLogs.addAll(CallUtil.getCallDetails(this));
             adapter.notifyDataSetChanged();
         }
+    }
+
+    @OnItemClick(R.id.list)
+    void OnItemClickList(int position){
+        Intent intent = new Intent(CallLogActivity.this, CallLogEntryFullscreenActivity.class);
+        intent.putExtra(CallLogEntryFullscreenActivity.KEY_RAW_DATA, adapter.getItem(position).getRawValues());
+        startActivity(intent);
     }
 }

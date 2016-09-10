@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.example.dpanayotov.callloggingexample.CallLogActivity"/>
+        <activity android:name="com.example.dpanayotov.callloggingexample.CallLogEntryFullscreenActivity"/>
     </application>
 
 </manifest>
