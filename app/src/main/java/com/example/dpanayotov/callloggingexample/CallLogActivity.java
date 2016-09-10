@@ -49,8 +49,7 @@ public class CallLogActivity extends AppCompatActivity {
                     .READ_CALL_LOG}, 13);
 
         } else {
-            callLogs.addAll(CallUtil.getCallDetails(this));
-            adapter.notifyDataSetChanged();
+            refreshCallLog();
         }
     }
 
@@ -61,8 +60,7 @@ public class CallLogActivity extends AppCompatActivity {
         if (requestCode == 13 && permissions.length > 0 && Manifest.permission.READ_CALL_LOG
                 .equals(permissions[0]) && grantResults.length > 0 && grantResults[0] ==
                 PackageManager.PERMISSION_GRANTED) {
-            callLogs.addAll(CallUtil.getCallDetails(this));
-            adapter.notifyDataSetChanged();
+            refreshCallLog();
         }
     }
 
@@ -72,5 +70,11 @@ public class CallLogActivity extends AppCompatActivity {
         intent.putExtra(CallLogEntryFullscreenActivity.KEY_RAW_DATA, adapter.getItem(position)
                 .getRawValues());
         startActivity(intent);
+    }
+
+    private void refreshCallLog() {
+        callLogs.clear();
+        callLogs.addAll(CallUtil.getCallDetails(this));
+        adapter.notifyDataSetChanged();
     }
 }
