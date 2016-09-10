@@ -7,55 +7,78 @@ import android.database.Cursor;
 import android.os.Build;
 import android.provider.CallLog;
 import android.support.v4.content.ContextCompat;
+import android.telecom.Call;
 import android.util.Log;
 
+import com.example.dpanayotov.callloggingexample.model.CallDirection;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by dpanayotov on 9/10/2016
  */
 public class CallUtil {
-    public static StringBuffer getCallDetails(Context context) {
+    public static List<com.example.dpanayotov.callloggingexample.model.CallLog> getCallDetails(Context context) {
 
-        Log.d("zxc", "1");
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || ContextCompat.checkSelfPermission
+                (context, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
 
-        StringBuffer sb = new StringBuffer();
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || ContextCompat.checkSelfPermission(context, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
-
-            Log.d("zxc", "2");
-            Cursor managedCursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI, null, null, null, null);
-            int number = managedCursor.getColumnIndex( CallLog.Calls.NUMBER );
-            int type = managedCursor.getColumnIndex( CallLog.Calls.TYPE );
-            int date = managedCursor.getColumnIndex( CallLog.Calls.DATE);
-            int duration = managedCursor.getColumnIndex( CallLog.Calls.DURATION);
-            sb.append( "Call Details :");
-            while ( managedCursor.moveToNext() ) {
-                String phNumber = managedCursor.getString( number );
-                String callType = managedCursor.getString( type );
-                String callDate = managedCursor.getString( date );
-                Date callDayTime = new Date(Long.valueOf(callDate));
-                String callDuration = managedCursor.getString( duration );
-                String dir = null;
-                int dircode = Integer.parseInt( callType );
-                switch( dircode ) {
-                    case CallLog.Calls.OUTGOING_TYPE:
-                        dir = "OUTGOING";
-                        break;
-
-                    case CallLog.Calls.INCOMING_TYPE:
-                        dir = "INCOMING";
-                        break;
-
-                    case CallLog.Calls.MISSED_TYPE:
-                        dir = "MISSED";
-                        break;
-                }
-                sb.append( "\nPhone Number:--- "+phNumber +" \nCall Type:--- "+dir+" \nCall Date:--- "+callDayTime+" \nCall duration in sec :--- "+callDuration );
-                sb.append("\n----------------------------------");
-            }
+            Cursor managedCursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI,
+                    null, null, null, null);
+            List<com.example.dpanayotov.callloggingexample.model.CallLog> callLogs = parseCallLogs(managedCursor);
+            Log.d("zxc", "Final list "+callLogs.size());
             managedCursor.close();
-            return sb;
+            return callLogs;
         }
         return null;
+    }
+
+    private static List<com.example.dpanayotov.callloggingexample.model.CallLog> parseCallLogs
+            (Cursor cursor) {
+
+        int number = cursor.getColumnIndex(CallLog.Calls.NUMBER);
+        int type = cursor.getColumnIndex(CallLog.Calls.TYPE);
+        int date = cursor.getColumnIndex(CallLog.Calls.DATE);
+        int duration = cursor.getColumnIndex(CallLog.Calls.DURATION);
+
+        com.example.dpanayotov.callloggingexample.model.CallLog callLog;
+
+        List<com.example.dpanayotov.callloggingexample.model.CallLog> callLogs = new ArrayList<>();
+
+        while (cursor.moveToNext()) {
+
+            callLog = new com.example.dpanayotov.callloggingexample.model.CallLog();
+
+            callLog.setPhoneNumber(cursor.getString(number));
+            callLog.setCallDate(new Date(Long.valueOf(cursor.getString(date))));
+            callLog.setCallDuration(cursor.getString(duration));
+            callLog.setCallDirection(getCallDirection(cursor.getInt(type)));
+            callLog.setRawValues(parseRawValues(cursor));
+
+            callLogs.add(callLog);
+        }
+
+        return callLogs;
+    }
+
+    private static CallDirection getCallDirection(int value) {
+        for (CallDirection callDirection : CallDirection.values()) {
+            if (callDirection.getValue() == value) {
+                return callDirection;
+            }
+        }
+        return null;
+    }
+
+    private static HashMap<String, String> parseRawValues(Cursor cursor) {
+        HashMap<String, String> values = new HashMap<>();
+        for (int i = 0; i < cursor.getColumnCount(); i++) {
+            values.put(cursor.getColumnName(i), cursor.getString(i));
+        }
+        return values;
     }
 }

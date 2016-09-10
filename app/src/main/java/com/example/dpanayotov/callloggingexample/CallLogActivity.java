@@ -7,14 +7,33 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.dpanayotov.callloggingexample.model.CallLog;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class CallLogActivity extends AppCompatActivity {
+
+    @BindView(R.id.list)
+    ListView list;
+
+    private List<CallLog> callLogs = new ArrayList<>();
+
+    private CallLogAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call_log);
+        ButterKnife.bind(this);
+        adapter = new CallLogAdapter(this, callLogs);
+        list.setAdapter(adapter);
     }
 
     @Override
@@ -27,7 +46,8 @@ public class CallLogActivity extends AppCompatActivity {
                     .READ_CALL_LOG}, 13);
 
         } else {
-            ((TextView) findViewById(R.id.call)).setText(CallUtil.getCallDetails(this));
+            callLogs.addAll(CallUtil.getCallDetails(this));
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -38,7 +58,8 @@ public class CallLogActivity extends AppCompatActivity {
         if (requestCode == 13 && permissions.length > 0 && Manifest.permission.READ_CALL_LOG
                 .equals(permissions[0]) && grantResults.length > 0 && grantResults[0] ==
                 PackageManager.PERMISSION_GRANTED) {
-            ((TextView) findViewById(R.id.call)).setText(CallUtil.getCallDetails(this));
+            callLogs.addAll(CallUtil.getCallDetails(this));
+            adapter.notifyDataSetChanged();
         }
     }
 }

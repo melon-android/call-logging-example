@@ -13,6 +13,8 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -29,5 +31,7 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.btn_call_log)
     public void onCallLogButtonClick(){
         startActivity(new Intent(MainActivity.this, CallLogActivity.class));
+        Bundle bundle = new Bundle();
+        HashMap<String, String> hashMap;
     }
 }
