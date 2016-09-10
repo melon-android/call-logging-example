@@ -67,9 +67,10 @@ public class CallLogActivity extends AppCompatActivity {
     }
 
     @OnItemClick(R.id.list)
-    void OnItemClickList(int position){
+    void OnItemClickList(int position) {
         Intent intent = new Intent(CallLogActivity.this, CallLogEntryFullscreenActivity.class);
-        intent.putExtra(CallLogEntryFullscreenActivity.KEY_RAW_DATA, adapter.getItem(position).getRawValues());
+        intent.putExtra(CallLogEntryFullscreenActivity.KEY_RAW_DATA, adapter.getItem(position)
+                .getRawValues());
         startActivity(intent);
     }
 }

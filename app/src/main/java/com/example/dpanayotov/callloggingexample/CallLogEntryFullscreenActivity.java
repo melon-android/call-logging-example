@@ -28,13 +28,14 @@ public class CallLogEntryFullscreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call_log_entry_fullscreen);
         ButterKnife.bind(this);
-        if(getIntent().hasExtra(KEY_RAW_DATA)) {
-            HashMap<String, String> rawData = (HashMap<String, String>) getIntent().getSerializableExtra(KEY_RAW_DATA);
+        if (getIntent().hasExtra(KEY_RAW_DATA)) {
+            HashMap<String, String> rawData = (HashMap<String, String>) getIntent()
+                    .getSerializableExtra(KEY_RAW_DATA);
             Iterator iterator = rawData.entrySet().iterator();
             StringBuffer sb = new StringBuffer();
             int counter = 0;
-            while (iterator.hasNext()){
-                Map.Entry pair = (Map.Entry)iterator.next();
+            while (iterator.hasNext()) {
+                Map.Entry pair = (Map.Entry) iterator.next();
                 sb.append("[");
                 sb.append(counter++);
                 sb.append("] ");

@@ -37,7 +37,7 @@ public class CallLogAdapter extends ArrayAdapter<CallLog> {
         ((TextView) convertView.findViewById(R.id.call_number)).setText(callLog.getPhoneNumber());
         ((TextView) convertView.findViewById(R.id.call_date)).setText(callLog.getCallDate()
                 .toString());
-        if(callLog.getCallDirection() != null) {
+        if (callLog.getCallDirection() != null) {
             switch (callLog.getCallDirection()) {
                 case INCOMING_TYPE:
                 case OUTGOING_TYPE:
@@ -51,7 +51,6 @@ public class CallLogAdapter extends ArrayAdapter<CallLog> {
             ((TextView) convertView.findViewById(R.id.call_direction)).setText(callLog
                     .getCallDirection().toString());
         }
-
 
 
         return convertView;

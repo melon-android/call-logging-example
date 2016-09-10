@@ -22,15 +22,17 @@ import java.util.Map;
  * Created by dpanayotov on 9/10/2016
  */
 public class CallUtil {
-    public static List<com.example.dpanayotov.callloggingexample.model.CallLog> getCallDetails(Context context) {
+    public static List<com.example.dpanayotov.callloggingexample.model.CallLog> getCallDetails
+            (Context context) {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || ContextCompat.checkSelfPermission
                 (context, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
 
             Cursor managedCursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI,
                     null, null, null, null);
-            List<com.example.dpanayotov.callloggingexample.model.CallLog> callLogs = parseCallLogs(managedCursor);
-            Log.d("zxc", "Final list "+callLogs.size());
+            List<com.example.dpanayotov.callloggingexample.model.CallLog> callLogs =
+                    parseCallLogs(managedCursor);
+            Log.d("zxc", "Final list " + callLogs.size());
             managedCursor.close();
             return callLogs;
         }
