@@ -43,7 +43,7 @@ public class CallLogAdapter extends ArrayAdapter<CallLog>{
                 break;
             }
         }
-       //((TextView)convertView.findViewById(R.id.call_direction)).setText(callLog.getCallDirection().toString());
+       ((TextView)convertView.findViewById(R.id.call_direction)).setText(callLog.getCallDirection().toString());
 
         return convertView;
     }
