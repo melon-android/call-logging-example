@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.example.dpanayotov.callloggingexample.model.CallDirection;
 import com.example.dpanayotov.callloggingexample.model.CallLog;
 
 import java.util.List;
@@ -34,8 +35,15 @@ public class CallLogAdapter extends ArrayAdapter<CallLog>{
 
         ((TextView)convertView.findViewById(R.id.call_number)).setText(callLog.getPhoneNumber());
         ((TextView)convertView.findViewById(R.id.call_date)).setText(callLog.getCallDate().toString());
-        ((TextView)convertView.findViewById(R.id.call_duration)).setText(callLog.getCallDuration());
-//        ((TextView)convertView.findViewById(R.id.call_direction)).setText(callLog.getCallDirection().toString());
+        switch (callLog.getCallDirection()){
+            case INCOMING_TYPE:
+            case OUTGOING_TYPE:
+            case VOICEMAIL_TYPE: {
+                ((TextView)convertView.findViewById(R.id.call_duration)).setText(callLog.getCallDuration());
+                break;
+            }
+        }
+       //((TextView)convertView.findViewById(R.id.call_direction)).setText(callLog.getCallDirection().toString());
 
         return convertView;
     }
