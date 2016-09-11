@@ -4,16 +4,17 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.example.dpanayotov.callloggingexample.model.CallLog;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +22,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemClick;
 
-public class CallLogActivity extends AppCompatActivity {
+public class CallLogActivity extends AppCompatActivity implements CallLogAdapter
+        .CallLogAdapterItemOnClickListener {
 
     @BindView(R.id.list)
-    ListView list;
+    RecyclerView list;
 
     private List<CallLog> callLogs = new ArrayList<>();
 
@@ -35,7 +37,11 @@ public class CallLogActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_call_log);
         ButterKnife.bind(this);
-        adapter = new CallLogAdapter(this, callLogs);
+        adapter = new CallLogAdapter(callLogs, this);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext
+                ());
+        list.setLayoutManager(mLayoutManager);
+        list.setItemAnimator(new DefaultItemAnimator());
         list.setAdapter(adapter);
     }
 
@@ -49,6 +55,7 @@ public class CallLogActivity extends AppCompatActivity {
                     .READ_CALL_LOG}, 13);
 
         } else {
+            Log.d("zxc", "???");
             refreshCallLog();
         }
     }
@@ -64,17 +71,17 @@ public class CallLogActivity extends AppCompatActivity {
         }
     }
 
-    @OnItemClick(R.id.list)
-    void OnItemClickList(int position) {
-        Intent intent = new Intent(CallLogActivity.this, CallLogEntryFullscreenActivity.class);
-        intent.putExtra(CallLogEntryFullscreenActivity.KEY_RAW_DATA, adapter.getItem(position)
-                .getRawValues());
-        startActivity(intent);
-    }
-
     private void refreshCallLog() {
         callLogs.clear();
         callLogs.addAll(CallUtil.getCallDetails(this));
         adapter.notifyDataSetChanged();
+        Log.d("zxc", "refresh");
+    }
+
+    @Override
+    public void onItemClicked(CallLog callLog) {
+        Intent intent = new Intent(CallLogActivity.this, CallLogEntryFullscreenActivity.class);
+        intent.putExtra(CallLogEntryFullscreenActivity.KEY_RAW_DATA, callLog.getRawValues());
+        startActivity(intent);
     }
 }

@@ -1,58 +1,104 @@
 package com.example.dpanayotov.callloggingexample;
 
-import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.example.dpanayotov.callloggingexample.model.CallDirection;
 import com.example.dpanayotov.callloggingexample.model.CallLog;
 
 import java.util.List;
 
-/**
- * Created by dpanayotov on 9/10/2016.
- */
-public class CallLogAdapter extends ArrayAdapter<CallLog> {
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-    public CallLogAdapter(Context context, List<CallLog> callLogs) {
-        super(context, R.layout.call_item, callLogs);
+/**
+ * Created by dpanayotov on 9/10/2016
+ */
+public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.CallLogRecyclerView> {
+
+    private static final String ZERO_CALL_DURATION = "0";
+
+    private List<CallLog> callLogs;
+
+    private CallLogAdapterItemOnClickListener onClickListener;
+
+    public CallLogAdapter(List<CallLog> callLogs, CallLogAdapterItemOnClickListener
+            onClickListener) {
+        Log.d("zxc", "CallLogAdapter");
+        this.callLogs = callLogs;
+        this.onClickListener = onClickListener;
     }
 
+    @Override
+    public CallLogRecyclerView onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d("zxc", "onCreateViewHolder");
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_item,
+                parent, false);
+        return new CallLogRecyclerView(itemView);
+    }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public int getItemCount() {
+        Log.d("zxc", "getItemCount " + callLogs.size());
+        return callLogs.size();
+    }
 
-        Log.d("zxc", "getView " + position);
-
-        CallLog callLog = getItem(position);
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.call_item, parent,
-                    false);
-        }
-
-        ((TextView) convertView.findViewById(R.id.call_number)).setText(callLog.getPhoneNumber());
-        ((TextView) convertView.findViewById(R.id.call_date)).setText(callLog.getCallDate()
-                .toString());
+    @Override
+    public void onBindViewHolder(CallLogRecyclerView holder, int position) {
+        Log.d("zxc", "onBindViewHolder " + position);
+        CallLog callLog = callLogs.get(position);
+        holder.callNumber.setText(callLog.getPhoneNumber());
+        holder.callDate.setText(callLog.getCallDate().toString());
         if (callLog.getCallDirection() != null) {
             switch (callLog.getCallDirection()) {
                 case INCOMING_TYPE:
                 case OUTGOING_TYPE:
-                case VOICEMAIL_TYPE: {
-                    ((TextView) convertView.findViewById(R.id.call_duration)).setText(callLog
-                            .getCallDuration() + " seconds,");
+                case VOICEMAIL_TYPE:
+                    holder.callDuration.setVisibility(View.VISIBLE);
+                    if (callLog.getCallDuration() != null && ZERO_CALL_DURATION.equals(callLog
+                            .getCallDuration())) {
+                        holder.callDuration.setText(callLog.getCallDuration());
+                    }
                     break;
-                }
+                default:
+                    holder.callDuration.setVisibility(View.GONE);
             }
+            holder.callDirection.setVisibility(View.VISIBLE);
+            holder.callDirection.setText(callLog.getCallDuration());
 
-            ((TextView) convertView.findViewById(R.id.call_direction)).setText(callLog
-                    .getCallDirection().toString());
+        } else {
+            holder.callDirection.setVisibility(View.GONE);
         }
-
-
-        return convertView;
     }
+
+    public class CallLogRecyclerView extends RecyclerView.ViewHolder {
+
+        @BindView(R.id.call_number)
+        public TextView callNumber;
+        @BindView(R.id.call_date)
+        public TextView callDate;
+        @BindView(R.id.call_duration)
+        public TextView callDuration;
+        @BindView(R.id.call_direction)
+        public TextView callDirection;
+
+        public CallLogRecyclerView(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onClickListener.onItemClicked(callLogs.get(getLayoutPosition()));
+                }
+            });
+        }
+    }
+
+    public interface CallLogAdapterItemOnClickListener {
+        void onItemClicked(CallLog callLog);
+    }
+
 }
