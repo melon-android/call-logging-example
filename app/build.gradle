@@ -11,6 +11,7 @@ android {
     buildToolsVersion "24.0.1"
 
     defaultConfig {
+        vectorDrawables.useSupportLibrary = true
         applicationId "com.example.dpanayotov.callloggingexample"
         minSdkVersion 15
         targetSdkVersion 24

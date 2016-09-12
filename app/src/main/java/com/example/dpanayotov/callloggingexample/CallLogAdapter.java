@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dpanayotov.callloggingexample.model.CallDirection;
@@ -65,7 +66,7 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.CallLogR
                 holder.callDuration.setVisibility(View.GONE);
             }
             holder.callDirection.setVisibility(View.VISIBLE);
-            holder.callDirection.setText(callLog.getCallDirection().toString());
+            holder.callDirection.setImageResource(callLog.getCallDirection().getResId());
 
         } else {
             holder.callDirection.setVisibility(View.GONE);
@@ -81,7 +82,7 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.CallLogR
         @BindView(R.id.call_duration)
         public TextView callDuration;
         @BindView(R.id.call_direction)
-        public TextView callDirection;
+        public ImageView callDirection;
 
         public CallLogRecyclerView(View itemView) {
             super(itemView);
