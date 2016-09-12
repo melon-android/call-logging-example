@@ -7,8 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.dpanayotov.callloggingexample.model.CallDirection;
 import com.example.dpanayotov.callloggingexample.model.CallLog;
 
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -53,20 +55,14 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.CallLogR
         holder.callNumber.setText(callLog.getPhoneNumber());
         holder.callDate.setText(callLog.getCallDate().toString());
         if (callLog.getCallDirection() != null) {
-            switch (callLog.getCallDirection()) {
-                case INCOMING_TYPE:
-                case OUTGOING_TYPE:
-                case VOICEMAIL_TYPE:
-                    if (callLog.getCallDuration() != null && !ZERO_CALL_DURATION.equals(callLog
-                            .getCallDuration())) {
-                        holder.callDuration.setVisibility(View.VISIBLE);
-                        holder.callDuration.setText(callLog.getCallDuration());
-                    } else {
-                        holder.callDuration.setVisibility(View.GONE);
-                    }
-                    break;
-                default:
-                    holder.callDuration.setVisibility(View.GONE);
+            if (Arrays.asList(CallDirection.INCOMING_TYPE, CallDirection.OUTGOING_TYPE,
+                    CallDirection.VOICEMAIL_TYPE).contains(callLog.getCallDirection()) && callLog
+                    .getCallDuration() != null && !ZERO_CALL_DURATION.equals(callLog
+                    .getCallDuration())) {
+                holder.callDuration.setVisibility(View.VISIBLE);
+                holder.callDuration.setText(callLog.getCallDuration());
+            } else {
+                holder.callDuration.setVisibility(View.GONE);
             }
             holder.callDirection.setVisibility(View.VISIBLE);
             holder.callDirection.setText(callLog.getCallDirection().toString());
