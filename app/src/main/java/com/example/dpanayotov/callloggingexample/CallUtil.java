@@ -63,7 +63,7 @@ public class CallUtil {
             callLog.setCallDirection(getCallDirection(cursor.getInt(type)));
             callLog.setRawValues(parseRawValues(cursor));
 
-            callLogs.add(callLog);
+            callLogs.add(0, callLog);
         }
 
         return callLogs;
