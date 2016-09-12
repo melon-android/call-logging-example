@@ -28,12 +28,14 @@ public class CallUtil {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || ContextCompat.checkSelfPermission
                 (context, Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED) {
 
+            List<com.example.dpanayotov.callloggingexample.model.CallLog> callLogs = null;
             Cursor managedCursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI,
                     null, null, null, null);
-            List<com.example.dpanayotov.callloggingexample.model.CallLog> callLogs =
-                    parseCallLogs(managedCursor);
-            Log.d("zxc", "Final list " + callLogs.size());
-            managedCursor.close();
+            if(managedCursor!=null){
+                callLogs = parseCallLogs(managedCursor);
+                Log.d("zxc", "Final list " + callLogs.size());
+                managedCursor.close();
+            }
             return callLogs;
         }
         return null;
