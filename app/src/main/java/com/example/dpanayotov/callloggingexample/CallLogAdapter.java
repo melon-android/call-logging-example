@@ -57,17 +57,19 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.CallLogR
                 case INCOMING_TYPE:
                 case OUTGOING_TYPE:
                 case VOICEMAIL_TYPE:
-                    holder.callDuration.setVisibility(View.VISIBLE);
-                    if (callLog.getCallDuration() != null && ZERO_CALL_DURATION.equals(callLog
+                    if (callLog.getCallDuration() != null && !ZERO_CALL_DURATION.equals(callLog
                             .getCallDuration())) {
+                        holder.callDuration.setVisibility(View.VISIBLE);
                         holder.callDuration.setText(callLog.getCallDuration());
+                    } else {
+                        holder.callDuration.setVisibility(View.GONE);
                     }
                     break;
                 default:
                     holder.callDuration.setVisibility(View.GONE);
             }
             holder.callDirection.setVisibility(View.VISIBLE);
-            holder.callDirection.setText(callLog.getCallDuration());
+            holder.callDirection.setText(callLog.getCallDirection().toString());
 
         } else {
             holder.callDirection.setVisibility(View.GONE);
