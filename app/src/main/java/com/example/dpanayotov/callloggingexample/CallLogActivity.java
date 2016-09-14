@@ -55,7 +55,6 @@ public class CallLogActivity extends AppCompatActivity implements CallLogAdapter
                     .READ_CALL_LOG}, 13);
 
         } else {
-            Log.d("zxc", "???");
             refreshCallLog();
         }
     }
@@ -75,7 +74,6 @@ public class CallLogActivity extends AppCompatActivity implements CallLogAdapter
         callLogs.clear();
         callLogs.addAll(CallUtil.getCallDetails(this));
         adapter.notifyDataSetChanged();
-        Log.d("zxc", "refresh");
     }
 
     @Override

@@ -33,7 +33,6 @@ public class CallUtil {
                     null, null, null, null);
             if(managedCursor!=null){
                 callLogs = parseCallLogs(managedCursor);
-                Log.d("zxc", "Final list " + callLogs.size());
                 managedCursor.close();
             }
             return callLogs;

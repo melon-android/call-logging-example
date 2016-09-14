@@ -30,14 +30,12 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.CallLogR
 
     public CallLogAdapter(List<CallLog> callLogs, CallLogAdapterItemOnClickListener
             onClickListener) {
-        Log.d("zxc", "CallLogAdapter");
         this.callLogs = callLogs;
         this.onClickListener = onClickListener;
     }
 
     @Override
     public CallLogRecyclerView onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d("zxc", "onCreateViewHolder");
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.call_item,
                 parent, false);
         return new CallLogRecyclerView(itemView);
@@ -45,13 +43,11 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.CallLogR
 
     @Override
     public int getItemCount() {
-        Log.d("zxc", "getItemCount " + callLogs.size());
         return callLogs.size();
     }
 
     @Override
     public void onBindViewHolder(CallLogRecyclerView holder, int position) {
-        Log.d("zxc", "onBindViewHolder " + position);
         CallLog callLog = callLogs.get(position);
         holder.callNumber.setText(callLog.getPhoneNumber());
         holder.callDate.setText(callLog.getCallDate().toString());
