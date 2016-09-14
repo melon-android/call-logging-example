@@ -1,16 +1,19 @@
 package com.example.dpanayotov.callloggingexample;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.provider.CallLog;
+import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
 import android.telecom.Call;
 import android.util.Log;
 
 import com.example.dpanayotov.callloggingexample.model.CallDirection;
+import com.example.dpanayotov.callloggingexample.model.Contact;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,6 +25,7 @@ import java.util.Map;
  * Created by dpanayotov on 9/10/2016
  */
 public class PhoneBookUtil {
+
     public static List<com.example.dpanayotov.callloggingexample.model.CallLog> getCallDetails
             (Context context) {
 
@@ -31,7 +35,7 @@ public class PhoneBookUtil {
             List<com.example.dpanayotov.callloggingexample.model.CallLog> callLogs = null;
             Cursor managedCursor = context.getContentResolver().query(CallLog.Calls.CONTENT_URI,
                     null, null, null, null);
-            if(managedCursor!=null){
+            if (managedCursor != null) {
                 callLogs = parseCallLogs(managedCursor);
                 managedCursor.close();
             }
@@ -83,5 +87,36 @@ public class PhoneBookUtil {
             values.put(cursor.getColumnName(i), cursor.getString(i));
         }
         return values;
+    }
+
+    public static List<Contact> getContacts(Context context) {
+        ContentResolver cr = context.getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+
+        List<Contact> contacts = null;
+        if (cur.getCount() > 0) {
+            contacts = new ArrayList<>();
+            Contact contact;
+            while (cur.moveToNext()) {
+                contact = new Contact();
+                contact.setId(cur.getInt(cur.getColumnIndex(ContactsContract.Contacts._ID)));
+                contact.setDisplayName(cur.getString(cur.getColumnIndex(ContactsContract.Contacts
+                        .DISPLAY_NAME)));
+
+                if (cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) >
+                        0) {
+                    Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                            null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new
+                                    String[]{Integer.toString(contact.getId())}, null);
+                    while (pCur.moveToNext()) {
+                        contact.addPhoneNumber(pCur.getString(pCur.getColumnIndex(ContactsContract
+                                .CommonDataKinds.Phone.NUMBER)));
+                    }
+                    pCur.close();
+                }
+                contacts.add(contact);
+            }
+        }
+        return contacts;
     }
 }
