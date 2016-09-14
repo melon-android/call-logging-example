@@ -22,6 +22,7 @@
         </activity>
         <activity android:name="com.example.dpanayotov.callloggingexample.CallLogActivity" />
         <activity android:name="com.example.dpanayotov.callloggingexample.CallLogEntryFullscreenActivity" />
+        <activity android:name="com.example.dpanayotov.callloggingexample.ContactsManagementActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

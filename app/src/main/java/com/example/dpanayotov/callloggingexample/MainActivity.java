@@ -31,7 +31,10 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.btn_call_log)
     public void onCallLogButtonClick() {
         startActivity(new Intent(MainActivity.this, CallLogActivity.class));
-        Bundle bundle = new Bundle();
-        HashMap<String, String> hashMap;
+    }
+
+    @OnClick(R.id.btn_contacts_management)
+    public void onContactsManagementButtonClick() {
+        startActivity(new Intent(MainActivity.this, ContactsManagementActivity.class));
     }
 }
