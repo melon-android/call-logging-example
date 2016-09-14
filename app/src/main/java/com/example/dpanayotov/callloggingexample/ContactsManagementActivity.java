@@ -20,7 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CallLogActivity extends AppCompatActivity implements CallLogAdapter
+public class ContactsManagementActivity extends AppCompatActivity implements CallLogAdapter
         .CallLogAdapterItemOnClickListener {
 
     @BindView(R.id.list)
@@ -76,7 +76,7 @@ public class CallLogActivity extends AppCompatActivity implements CallLogAdapter
 
     @Override
     public void onItemClicked(CallLog callLog) {
-        Intent intent = new Intent(CallLogActivity.this, CallLogEntryFullscreenActivity.class);
+        Intent intent = new Intent(ContactsManagementActivity.this, CallLogEntryFullscreenActivity.class);
         intent.putExtra(CallLogEntryFullscreenActivity.KEY_RAW_DATA, callLog.getRawValues());
         startActivity(intent);
     }

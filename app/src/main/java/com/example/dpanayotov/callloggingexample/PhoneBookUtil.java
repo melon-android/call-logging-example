@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Created by dpanayotov on 9/10/2016
  */
-public class CallUtil {
+public class PhoneBookUtil {
     public static List<com.example.dpanayotov.callloggingexample.model.CallLog> getCallDetails
             (Context context) {
 
