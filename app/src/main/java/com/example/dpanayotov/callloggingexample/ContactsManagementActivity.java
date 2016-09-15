@@ -1,15 +1,20 @@
 package com.example.dpanayotov.callloggingexample;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.dpanayotov.callloggingexample.model.Contact;
@@ -85,7 +90,44 @@ public class ContactsManagementActivity extends AppCompatActivity implements Con
     }
 
     @OnClick(R.id.add_contact)
-    void addContactButtonOnClick(){
-        Toast.makeText(this, "Test", Toast.LENGTH_SHORT).show();
+    void addContactButtonOnClick() {
+        // get prompts.xml view
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        View promptsView = layoutInflater.inflate(R.layout.dialog_add_contact, null);
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set prompts.xml to alertdialog builder
+        alertDialogBuilder.setView(promptsView);
+        final AddContactDialogBinder binder = new AddContactDialogBinder(promptsView);
+
+        // set dialog message
+        alertDialogBuilder.setCancelable(false).setPositiveButton("OK", new DialogInterface
+                .OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                Toast.makeText(ContactsManagementActivity.this, "Name: " + binder.contactName
+                        .getText() + " Number: " + binder.contactNumber.getText(), Toast
+                        .LENGTH_SHORT).show();
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+        alertDialog.show();
+    }
+
+    class AddContactDialogBinder {
+        @BindView(R.id.contact_name)
+        EditText contactName;
+        @BindView(R.id.contact_number)
+        EditText contactNumber;
+
+        public AddContactDialogBinder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 }
