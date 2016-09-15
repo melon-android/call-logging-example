@@ -33,7 +33,7 @@ public class ContactsManagementActivity extends AppCompatActivity implements Con
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_call_log);
+        setContentView(R.layout.activity_contacts_management);
         ButterKnife.bind(this);
         adapter = new ContactsAdapter(contacts, this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext
@@ -70,7 +70,7 @@ public class ContactsManagementActivity extends AppCompatActivity implements Con
 
     private void refreshContacts() {
         List<Contact> newContacts = PhoneBookUtil.getContacts(this);
-        if(newContacts!=null){
+        if (newContacts != null) {
             contacts.clear();
             contacts.addAll(newContacts);
             adapter.notifyDataSetChanged();
@@ -79,6 +79,7 @@ public class ContactsManagementActivity extends AppCompatActivity implements Con
 
     @Override
     public void onItemClicked(Contact contact) {
-        Toast.makeText(this, "Item clicked: "+contact.getDisplayName(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Item clicked: " + contact.getDisplayName(), Toast.LENGTH_SHORT)
+                .show();
     }
 }
