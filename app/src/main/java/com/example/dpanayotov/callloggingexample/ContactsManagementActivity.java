@@ -19,6 +19,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ContactsManagementActivity extends AppCompatActivity implements ContactsAdapter
         .ContactsAdapterItemOnClickListener {
@@ -81,5 +82,10 @@ public class ContactsManagementActivity extends AppCompatActivity implements Con
     public void onItemClicked(Contact contact) {
         Toast.makeText(this, "Item clicked: " + contact.getDisplayName(), Toast.LENGTH_SHORT)
                 .show();
+    }
+
+    @OnClick(R.id.add_contact)
+    void addContactButtonOnClick(){
+        Toast.makeText(this, "Test", Toast.LENGTH_SHORT).show();
     }
 }
