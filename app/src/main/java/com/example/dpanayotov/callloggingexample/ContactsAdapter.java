@@ -81,8 +81,12 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
                     int oldPosition = selectedPosition;
                     selectedPosition = getLayoutPosition();
                     boolean selected = oldPosition != selectedPosition;
-                    notifyItemChanged(selectedPosition);
-                    if (selected) notifyItemChanged(oldPosition);
+                    if (selected) {
+                        notifyItemChanged(oldPosition);
+                    }else{
+                        selectedPosition = -1;
+                    }
+                    notifyItemChanged(getLayoutPosition());
                     onClickListener.onItemClicked(contacts.get(getLayoutPosition()), selected);
                 }
             });
