@@ -95,14 +95,19 @@ public class ContactsManagementActivity extends AppCompatActivity implements Con
         LayoutInflater layoutInflater = LayoutInflater.from(this);
         View promptsView = layoutInflater.inflate(R.layout.dialog_add_contact, null);
         final AddContactDialogBinder binder = new AddContactDialogBinder(promptsView);
-        
+
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         AlertDialog alertDialog = alertDialogBuilder.setView(promptsView).setCancelable(false)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                Toast.makeText(ContactsManagementActivity.this, "Name: " + binder.contactName
-                        .getText() + " Number: " + binder.contactNumber.getText(), Toast
-                        .LENGTH_SHORT).show();
+                String name = binder.contactName.getText().toString();
+                String number = binder.contactNumber.getText().toString();
+                if (name != null && !name.isEmpty() && number != null && !number.isEmpty()) {
+                    PhoneBookUtil.addContact(name, number, ContactsManagementActivity.this);
+                } else {
+                    Toast.makeText(ContactsManagementActivity.this, "Please fill in both fields "
+                            + "to crate a new contact.", Toast.LENGTH_SHORT).show();
+                }
             }
         }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {

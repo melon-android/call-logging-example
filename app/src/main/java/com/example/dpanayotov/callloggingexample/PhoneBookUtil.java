@@ -1,16 +1,18 @@
 package com.example.dpanayotov.callloggingexample;
 
 import android.Manifest;
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.support.v4.content.ContextCompat;
-import android.telecom.Call;
-import android.util.Log;
+import android.widget.Toast;
 
 import com.example.dpanayotov.callloggingexample.model.CallDirection;
 import com.example.dpanayotov.callloggingexample.model.Contact;
@@ -19,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by dpanayotov on 9/10/2016
@@ -109,8 +110,8 @@ public class PhoneBookUtil {
                             null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new
                                     String[]{Integer.toString(contact.getId())}, null);
                     while (pCur.moveToNext()) {
-                        contact.addPhoneNumber(pCur.getString(pCur.getColumnIndex(ContactsContract
-                                .CommonDataKinds.Phone.NUMBER)));
+                        contact.addPhoneNumber(pCur.getString(pCur.getColumnIndex
+                                (ContactsContract.CommonDataKinds.Phone.NUMBER)));
                     }
                     pCur.close();
                 }
@@ -119,4 +120,45 @@ public class PhoneBookUtil {
         }
         return contacts;
     }
+
+    public static String addContact(String name, String number, Context context){
+
+        ArrayList <ContentProviderOperation> ops = new ArrayList < ContentProviderOperation > ();
+
+        ops.add(ContentProviderOperation.newInsert(
+                ContactsContract.RawContacts.CONTENT_URI)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null)
+                .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, null)
+                .build());
+
+            ops.add(ContentProviderOperation.newInsert(
+                    ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                    .withValue(ContactsContract.Data.MIMETYPE,
+                            ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                    .withValue(
+                            ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME,
+                            name).build());
+
+            ops.add(ContentProviderOperation.
+                    newInsert(ContactsContract.Data.CONTENT_URI)
+                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                    .withValue(ContactsContract.Data.MIMETYPE,
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                    .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, number)
+                    .withValue(ContactsContract.CommonDataKinds.Phone.TYPE,
+                            ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)
+                    .build());
+
+        // Asking the Contact provider to create a new contact
+        try {
+            return context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops).toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context, "Exception: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        return null;
+    }
+
+
 }
