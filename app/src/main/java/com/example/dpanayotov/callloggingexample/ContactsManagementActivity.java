@@ -104,6 +104,7 @@ public class ContactsManagementActivity extends AppCompatActivity implements Con
                 String number = binder.contactNumber.getText().toString();
                 if (name != null && !name.isEmpty() && number != null && !number.isEmpty()) {
                     PhoneBookUtil.addContact(name, number, ContactsManagementActivity.this);
+                    refreshContacts();
                 } else {
                     Toast.makeText(ContactsManagementActivity.this, "Please fill in both fields "
                             + "to crate a new contact.", Toast.LENGTH_SHORT).show();
