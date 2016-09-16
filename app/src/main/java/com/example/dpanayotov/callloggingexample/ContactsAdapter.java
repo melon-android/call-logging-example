@@ -1,5 +1,6 @@
 package com.example.dpanayotov.callloggingexample;
 
+import android.graphics.Color;
 import android.provider.Contacts;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,7 +25,10 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
 
     ContactsAdapterItemOnClickListener onClickListener;
 
-    public ContactsAdapter(List<Contact> contacts, ContactsAdapterItemOnClickListener onClickListener){
+    private int selectedPosition = -1;
+
+    public ContactsAdapter(List<Contact> contacts, ContactsAdapterItemOnClickListener
+            onClickListener) {
         this.contacts = contacts;
         this.onClickListener = onClickListener;
     }
@@ -40,15 +44,17 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
     public void onBindViewHolder(ContactRecyclerView holder, int position) {
         Contact contact = contacts.get(position);
         holder.name.setText(contact.getDisplayName());
-        if(contact.getPhoneNumbers().size() > 0){
+        if (contact.getPhoneNumbers().size() > 0) {
             holder.phoneNumbers.setVisibility(View.VISIBLE);
             holder.phoneNumbers.setText("");
-            for(String phoneNumber : contact.getPhoneNumbers()){
+            for (String phoneNumber : contact.getPhoneNumbers()) {
                 holder.phoneNumbers.append(phoneNumber + "\n");
             }
-        }else{
+        } else {
             holder.phoneNumbers.setVisibility(View.GONE);
         }
+        holder.root.setBackgroundColor(selectedPosition == position ? Color.LTGRAY : Color
+                .TRANSPARENT);
     }
 
     @Override
@@ -63,19 +69,27 @@ public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.Contac
         @BindView(R.id.phone_numbers)
         public TextView phoneNumbers;
 
+        public View root;
+
         public ContactRecyclerView(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            root = itemView;
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onClickListener.onItemClicked(contacts.get(getLayoutPosition()));
+                    int oldPosition = selectedPosition;
+                    selectedPosition = getLayoutPosition();
+                    boolean selected = oldPosition != selectedPosition;
+                    notifyItemChanged(selectedPosition);
+                    if (selected) notifyItemChanged(oldPosition);
+                    onClickListener.onItemClicked(contacts.get(getLayoutPosition()), selected);
                 }
             });
         }
     }
 
     public interface ContactsAdapterItemOnClickListener {
-        void onItemClicked(Contact contact);
+        void onItemClicked(Contact contact, boolean selected);
     }
 }

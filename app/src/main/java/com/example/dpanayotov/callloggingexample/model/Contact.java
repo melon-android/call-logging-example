@@ -11,12 +11,14 @@ public class Contact {
     private int id;
     private String displayName;
     private List<String> phoneNumbers;
+    private String lookupKey;
     private HashMap<String, String> rawData;
 
-    public Contact(int id, String displayName, List<String> phoneNumbers, HashMap<String, String> rawData) {
+    public Contact(int id, String displayName, List<String> phoneNumbers, String lookupKey, HashMap<String, String> rawData) {
         this.id = id;
         this.displayName = displayName;
         this.phoneNumbers = phoneNumbers;
+        this.lookupKey = lookupKey;
         this.rawData = rawData;
     }
 
@@ -34,6 +36,10 @@ public class Contact {
 
     public List<String> getPhoneNumbers() {
         return phoneNumbers;
+    }
+
+    public String getLookupKey() {
+        return lookupKey;
     }
 
     public HashMap<String, String> getRawData() {
@@ -58,6 +64,10 @@ public class Contact {
 
     public void addPhoneNumbers(List<String> phoneNumbers){
         this.phoneNumbers.addAll(phoneNumbers);
+    }
+
+    public void setLookupKey(String lookupKey) {
+        this.lookupKey = lookupKey;
     }
 
     public void setRawData(HashMap<String, String> rawData) {

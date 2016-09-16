@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -31,10 +32,14 @@ public class ContactsManagementActivity extends AppCompatActivity implements Con
 
     @BindView(R.id.list)
     RecyclerView list;
+    @BindView(R.id.remove_contact)
+    FloatingActionButton removeContact;
 
     private List<Contact> contacts = new ArrayList<>();
 
     private ContactsAdapter adapter;
+
+    private Contact selectedContact = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +89,13 @@ public class ContactsManagementActivity extends AppCompatActivity implements Con
     }
 
     @Override
-    public void onItemClicked(Contact contact) {
+    public void onItemClicked(Contact contact, boolean selected) {
+        if (selected) {
+            selectedContact = contact;
+            removeContact.setVisibility(View.VISIBLE);
+        } else {
+            removeContact.setVisibility(View.GONE);
+        }
         Toast.makeText(this, "Item clicked: " + contact.getDisplayName(), Toast.LENGTH_SHORT)
                 .show();
     }
@@ -117,6 +128,12 @@ public class ContactsManagementActivity extends AppCompatActivity implements Con
         }).create();
 
         alertDialog.show();
+    }
+
+    @OnClick(R.id.remove_contact)
+    void removeContactButtonClick() {
+        PhoneBookUtil.removeContact(selectedContact.getLookupKey(), this);
+        refreshContacts();
     }
 
     class AddContactDialogBinder {
