@@ -28,4 +28,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Call Tracking" />
+
+    <Button
+        android:id="@+id/btn_contact_image_size"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Read contact image size"/>
 </LinearLayout>

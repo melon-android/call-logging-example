@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 
@@ -36,5 +37,11 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.btn_contacts_management)
     public void onContactsManagementButtonClick() {
         startActivity(new Intent(MainActivity.this, ContactsManagementActivity.class));
+    }
+
+    @OnClick(R.id.btn_contact_image_size)
+    public void onConcatImageSizeButtonClick() {
+        Toast.makeText(this, "Max dimensions: " + PhoneBookUtil.getMaxContactPhotoSize(this),
+                Toast.LENGTH_SHORT).show();
     }
 }
