@@ -6,7 +6,10 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.CallLog;
@@ -17,6 +20,9 @@ import android.widget.Toast;
 import com.example.dpanayotov.callloggingexample.model.CallDirection;
 import com.example.dpanayotov.callloggingexample.model.Contact;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -128,6 +134,8 @@ public class PhoneBookUtil {
 
         ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
 
+        int rawContactInsertIndex = ops.size();
+
         ops.add(ContentProviderOperation.newInsert(ContactsContract.RawContacts.CONTENT_URI)
                 .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, null).withValue
                         (ContactsContract.RawContacts.ACCOUNT_NAME, null).build());
@@ -146,6 +154,13 @@ public class PhoneBookUtil {
                 (ContactsContract.CommonDataKinds.Phone.TYPE, ContactsContract.CommonDataKinds
                         .Phone.TYPE_MOBILE).build());
 
+        // add the photo
+        ops.add(ContentProviderOperation.newInsert(ContactsContract.Data.CONTENT_URI)
+                .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactInsertIndex)
+                .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Photo. CONTENT_ITEM_TYPE)
+                .withValue(ContactsContract.CommonDataKinds.Photo.PHOTO, toByteArray(getDefaultPhoto(context)))
+                        .build());
+
         // Asking the Contact provider to create a new contact
         try {
             return context.getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops)
@@ -155,6 +170,31 @@ public class PhoneBookUtil {
             Toast.makeText(context, "Exception: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
         return null;
+    }
+
+    private static Bitmap getDefaultPhoto(Context context){
+        return getBitmapFromAsset(context, "control.jpg");
+    }
+
+    public static Bitmap getBitmapFromAsset(Context context, String filePath) {
+        AssetManager assetManager = context.getAssets();
+
+        InputStream istr;
+        Bitmap bitmap = null;
+        try {
+            istr = assetManager.open(filePath);
+            bitmap = BitmapFactory.decodeStream(istr);
+        } catch (IOException e) {
+            // handle exception
+        }
+
+        return bitmap;
+    }
+
+    public static byte[] toByteArray(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+        return stream.toByteArray();
     }
 
     public static void removeContact(String lookupKey, Context context) {
